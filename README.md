@@ -19,10 +19,12 @@ Go to the cloned repository folder and input the following command into your ter
 cargo run
 ```
 
+## Custom datasets
+
 You can change `inputs.csv` and `outputs.csv` files to run the network on different datasets.
 
 They should contain comma separated values and the first row should contain column names. See the sample files in datasets folder for reference.
 
 ## Configuration
 
-Files called `generations.rs` and `genetics.rs` contain constants that you can change in order to parametrize the algorithm.
+Files named `generations.rs` and `genetics.rs` contain constants that you can change in order to parametrize the algorithm.
