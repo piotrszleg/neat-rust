@@ -126,7 +126,7 @@ pub fn run<R: Rng + ?Sized>(mut rng: &mut R, training_dataset: &Dataset, validat
         specimens: (0..NUMBER_OF_SPECIMENS).map(|_| {
             let mut genome = start_genome(&problem);
             // initial mutation 
-            mutate(&mut rng, &mut genome, 0);
+            mutate(&mut rng, &mut genome, &problem, 0);
             return genome;
         }).collect(),
         best_fitness:0.
@@ -220,9 +220,9 @@ fn eliminate_and_reproduce(&mut self) {
             // create child 
             let mut new_child = cross(&mut self.random, parent_a, parent_b);
             // mutate it  
-            mutate(&mut self.random, &mut new_child, self.iteration);
+            mutate(&mut self.random, &mut new_child, self.problem, self.iteration);
             
-            if is_valid(&new_child) {
+            if is_valid(&new_child, self.problem) {
                 self.children.push(new_child);
             }
         }
@@ -275,9 +275,9 @@ fn mixed_children(&mut self) {
     // create child 
     let mut new_child = cross(&mut self.random, parent_a, parent_b);
     // mutate it  
-    mutate(&mut self.random, &mut new_child, self.iteration);
+    mutate(&mut self.random, &mut new_child, self.problem, self.iteration);
     
-    if is_valid(&new_child) {
+    if is_valid(&new_child, self.problem) {
         self.children.push(new_child);
     }
 }
@@ -319,9 +319,9 @@ fn great_extinction(&mut self, iteration: u64) {
         loop {
             new_child = cross(&mut self.random, parent_a, parent_b);
             // mutate it  
-            mutate(&mut self.random, &mut new_child, iteration);
+            mutate(&mut self.random, &mut new_child, self.problem, iteration);
             
-            if is_valid(&new_child) {
+            if is_valid(&new_child, self.problem) {
                 self.children.push(new_child);
                 break;
             }

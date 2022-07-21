@@ -1,5 +1,6 @@
 use rand::Rng;
 use super::structs::genome::Genome;
+use super::structs::problem::Problem;
 use super::structs::gene::Gene;
 use std::cmp::max;
 
@@ -19,7 +20,7 @@ fn max_edges_in_undirected_graph(n: u64) -> u64 {
     return (n*(n-1))/2;
 }
 
-pub fn mutate<R: Rng + ?Sized>(mut rng: &mut R, mut genome:&mut Genome, innovation:u64) {
+pub fn mutate<R: Rng + ?Sized>(mut rng: &mut R, mut genome:&mut Genome, problem:&Problem, innovation:u64) {
     let mut genes_to_add:Vec<Gene> = Vec::new();
     for gene in genome.genes.iter_mut() {
         // if > mutate weight chance 
@@ -65,28 +66,32 @@ pub fn mutate<R: Rng + ?Sized>(mut rng: &mut R, mut genome:&mut Genome, innovati
     genome.genes.append(&mut genes_to_add);
     
     if choice(rng, INSERT_CONNECTION_CHANCE) {
-        insert_connection(&mut rng, &mut genome, innovation);
+        insert_connection(&mut rng, &mut genome, &problem, innovation);
     }
 }
 
-pub fn is_valid(genome:&Genome) -> bool {
-    return !genome.has_cycles() && genome.genes.iter().fold(true, |acc, gene| acc && gene.output >= 3);
+pub fn is_valid(genome:&Genome, problem:&Problem) -> bool {
+    return !genome.has_cycles() && genome.genes.iter().fold(true, |acc, gene| acc && gene.output >= problem.inputs);
 }
 
-fn insert_connection<R: Rng + ?Sized>(rng: &mut R, genome:&mut Genome, innovation:u64) {
+fn insert_connection<R: Rng + ?Sized>(rng: &mut R, genome:&mut Genome, problem:&Problem, innovation:u64) {
     // Lazy generate all options and choose stopping point
 
-    let max_possible_connections = max_edges_in_undirected_graph(genome.nodes as u64);
-    let possible_new_connections = max_possible_connections as i64 - 4 * genome.nodes as i64 - genome.genes.len() as i64;
+    let mut possible_connections = max_edges_in_undirected_graph(genome.nodes as u64) as i64;
+    // subtract connections from each node to inputs and itself 
+    possible_connections -= ((problem.inputs + 1) * genome.nodes) as i64;
+    // subtract already existing connections 
+    possible_connections -= genome.genes.len() as i64;
 
-    if possible_new_connections > 0 {
-        let new_connection = rng.gen_range(0..possible_new_connections);
+    if possible_connections > 0 {
+        let new_connection = rng.gen_range(0..possible_connections);
         
         // iterate over possible connections, increment if connection doesn't exist 
         // if index == new_path add connection 
         let mut index = 0;
         for input in 0..genome.nodes-1 {
-            for output in 3..genome.nodes {
+            // output can't lead to input node
+            for output in problem.inputs..genome.nodes {
                 if input != output && !genome.has_connection(input, output) {   
                     if index == new_connection { 
                         genome.genes.push(Gene{
