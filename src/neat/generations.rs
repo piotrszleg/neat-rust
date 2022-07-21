@@ -94,6 +94,8 @@ pub struct Dataset {
     pub outputs: DataFrame
 }
 
+// struct used to reduce number of passed arguments 
+// between functions in this module
 pub struct Generations<'a, R: Rng + ?Sized> {
     random: &'a mut R,
     problem:&'a Problem,

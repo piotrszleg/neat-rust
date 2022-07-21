@@ -3,12 +3,12 @@ use std::collections::HashSet;
 
 #[derive(Debug)]
 pub struct Genome {
-    pub nodes: usize,
-    pub genes: Vec<Gene>,
+    pub nodes: usize, // number of nodes in the network 
+    pub genes: Vec<Gene>, // genes represent connections between nodes
+    pub active_nodes: usize, // nodes that are used in the evaluation 
     pub fitness: f64,
     pub fitness_complexity: f64,
     pub fitness_complexity_speciation: f64,
-    pub active_nodes: usize,
     pub validation_fitness: f64
 }
 
