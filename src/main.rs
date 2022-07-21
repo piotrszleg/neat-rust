@@ -2,13 +2,13 @@ use rand::thread_rng;
 use csv;
 mod neat;
 
-// visualization
-// https://js.cytoscape.org/#notation/elements-json
-
 /*
 TODO: 
-- verify structure
 - load custom dataset 
+- test dataset 
+- verify structure
+- genome and specimen distinction
+- logs filtering and saving
 */
 
 

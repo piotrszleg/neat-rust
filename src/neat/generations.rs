@@ -6,11 +6,6 @@ use super::evaluation::evaluate;
 use super::visualisation::visualise;
 use super::genetics::{cross, mutate, difference, is_valid};
 
-// generations run decomposition 
-// genome and specimen distinction
-// zbior testowy 
-// logs filtering and saving
-
 const NUMBER_OF_SPECIMENS:usize = 1000;
 const TOURNAMENT_SIZE:usize = 20;
 const STAGNATION_TO_EXTINCTION:usize = 20;
